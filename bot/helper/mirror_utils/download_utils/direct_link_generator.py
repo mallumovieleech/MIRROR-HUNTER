@@ -245,6 +245,7 @@ def fembed(link: str) -> str:
     lst_link = [dl_url[i] for i in dl_url]
     return lst_link[count-1]
 
+
 def gdtot(url: str) -> str:
     """ Gdtot google drive link generator
     By https://github.com/xcscxr """
