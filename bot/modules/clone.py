@@ -8,6 +8,7 @@ from bot.helper.mirror_utils.status_utils.clone_status import CloneStatus
 from bot import dispatcher, LOGGER, CLONE_LIMIT, STOP_DUPLICATE, download_dict, download_dict_lock, Interval
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, check_limit, is_gdtot_link
 from bot.helper.mirror_utils.download_utils.direct_link_generator import gdtot
+from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 import random
 import string
 
@@ -30,6 +31,15 @@ def cloneNode(update, context):
                 msg3 = "File/Folder is already available in Drive.\nHere are the search results:"
                 sendMarkup(msg3, context.bot, update, button)
                 return
+        is_gdtot = is_gdtot_link(link)
+        if is_gdtot:
+            try:
+                msg = sendMessage(f"Processing: <code>{link}</code>", bot, message)
+                link = gdtot(link)
+                deleteMessage(bot, msg)
+            except DirectDownloadLinkException as e:
+                deleteMessage(bot, msg)
+                return sendMessage(str(e), bot, message)
         if CLONE_LIMIT is not None:
             result = check_limit(size, CLONE_LIMIT)
             if result:
