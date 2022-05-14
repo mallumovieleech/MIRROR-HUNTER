@@ -458,11 +458,8 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False, 
     if bot_utils.is_gdrive_link(link):
         if not isTar and not extract and not isLeech:
             sendMessage(f"•Use /{BotCommands.CloneCommand} to clone Google Drive file/folder\n•Use /{BotCommands.TarMirrorCommand} to make tar of Google Drive folder\n•Use /{BotCommands.ZipMirrorCommand} to make zip of Google Drive folder\n•Use /{BotCommands.UnzipMirrorCommand} to extracts archive Google Drive file", bot, update)
-            return
-        res, size, name, files = gdriveTools.GoogleDriveHelper().helper(link)
-        if res != "":
-            sendMessage(res, bot, update)
-            return
+        else:
+            Thread(target=add_gd_download, args=(link, listener, is_gdtot)).start()
         if TAR_UNZIP_LIMIT is not None:
             result = bot_utils.check_limit(size, TAR_UNZIP_LIMIT)
             if result:
