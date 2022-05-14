@@ -102,12 +102,12 @@ def cloneNode(update, context):
                 log_m = f"\n\n<b>Link Uploaded, Click Below Button</b>"
                 sendMarkup(result + cc + fwdpm, context.bot, update, InlineKeyboardMarkup([[InlineKeyboardButton(text="𝐂𝐋𝐈𝐂𝐊 𝐇𝐄𝐑𝐄", url=logmsg.link)]]))
                 sendPrivate(result + cc + msg_g, context.bot, update, button)
-    else:
-        sendMessage('Provide G-Drive Shareable Link to Clone.', context.bot, update)
+        else:
+            sendMessage('Provide G-Drive Shareable Link to Clone.', context.bot, update)
         if is_gdtot:
             gd.deletefile(link)
-    else:
-        sendMessage('Send Gdrive or gdtot link along with command or by replying to the link by command', bot, message)
+        else:
+            sendMessage('Send Gdrive or gdtot link along with command or by replying to the link by command', bot, message)
 
 clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 dispatcher.add_handler(clone_handler)
