@@ -40,6 +40,17 @@ def cloneNode(update, context):
             except DirectDownloadLinkException as e:
                 deleteMessage(bot, msg)
                 return sendMessage(str(e), bot, message)
+        if is_gdrive_link(link):
+        gd = GoogleDriveHelper()
+        res, size, name, files = gd.helper(link)
+        if res != "":
+            return sendMessage(res, bot, message)
+        if STOP_DUPLICATE:
+            LOGGER.info('Checking File/Folder if already in Drive...')
+            smsg, button = gd.drive_list(name, True, True)
+            if smsg:
+                msg3 = "File/Folder is already available in Drive.\nHere are the search results:"
+                return sendMarkup(msg3, bot, message, button)
         if CLONE_LIMIT is not None:
             result = check_limit(size, CLONE_LIMIT)
             if result:
