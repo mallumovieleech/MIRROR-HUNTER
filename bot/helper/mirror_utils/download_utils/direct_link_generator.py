@@ -8,7 +8,7 @@ from https://github.com/AvinashReddy3108/PaperplaneExtended . I hereby take no c
 than the modifications. See https://github.com/AvinashReddy3108/PaperplaneExtended/commits/master/userbot/modules/direct_links.py
 for original authorship. """
 
-from bot import LOGGER, UPTOBOX_TOKEN
+from bot import LOGGER, UPTOBOX_TOKEN, CRYPT
 import json
 import math
 import re
@@ -67,6 +67,8 @@ def direct_link_generator(link: str):
         return fembed(link)
     elif 'naniplay.com' in link:
         return fembed(link)
+    elif is_gdtot_link(link):
+        return gdtot(link)
     elif 'layarkacaxxi.icu' in link:
         return fembed(link)
     elif 'sbembed.com' in link:
@@ -241,6 +243,26 @@ def fembed(link: str) -> str:
     count = len(dl_url)
     lst_link = [dl_url[i] for i in dl_url]
     return lst_link[count-1]
+
+def gdtot(url: str) -> str:
+    """ Gdtot google drive link generator
+    By https://github.com/xcscxr """
+
+    if CRYPT is None:
+        raise DirectDownloadLinkException("ERROR: CRYPT cookie not provided")
+
+    match = re_findall(r'https?://(.+)\.gdtot\.(.+)\/\S+\/\S+', url)[0]
+
+    with rsession() as client:
+        client.cookies.update({'crypt': CRYPT})
+        res = client.get(url)
+        res = client.get(f"https://{match[0]}.gdtot.{match[1]}/dld?id={url.split('/')[-1]}")
+    matches = re_findall('gd=(.*?)&', res.text)
+    try:
+        decoded_id = b64decode(str(matches[0])).decode('utf-8')
+    except:
+        raise DirectDownloadLinkException("ERROR: Try in your broswer, mostly file not found or user limit exceeded!")
+    return f'https://drive.google.com/open?id={decoded_id}'
 
 
 def sbembed(link: str) -> str:
