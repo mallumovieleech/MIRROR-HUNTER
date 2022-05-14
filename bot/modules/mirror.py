@@ -21,6 +21,7 @@ from bot import Interval, INDEX_URL, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_F
                 TAR_UNZIP_LIMIT, TG_SPLIT_SIZE
 from bot.helper.ext_utils import fs_utils, bot_utils
 from bot.helper.ext_utils.shortenurl import short_url
+from bot.helper.ext_utils.bot_utils import is_url, is_magnet, is_gdtot_link, is_mega_link, is_gdrive_link, get_content_type
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException, NotSupportedExtractionArchive
 from bot.helper.mirror_utils.download_utils.aria2_download import AriaDownloadHelper
 from bot.helper.mirror_utils.download_utils.mega_downloader import MegaDownloadHelper
@@ -438,6 +439,19 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False, 
             if "Youtube" in str(e):
                 sendMessage(f"{e}", bot, update)
                 return
+
+    if not is_mega_link(link) and not isQbit and not is_magnet(link) \
+        and not is_gdrive_link(link) and not link.endswith('.torrent'):
+        content_type = get_content_type(link)
+        if content_type is None or re_match(r'text/html|text/plain', content_type):
+            try:
+                is_gdtot = is_gdtot_link(link)
+                link = direct_link_generator(link)
+                LOGGER.info(f"Generated link: {link}")
+            except DirectDownloadLinkException as e:
+                LOGGER.info(str(e))
+                if str(e).startswith('ERROR:'):
+                    return sendMessage(str(e), bot, message)
 
     listener = MirrorListener(bot, update, pswd, isTar, extract, isZip, isQbit, isLeech)
 
