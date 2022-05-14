@@ -174,8 +174,8 @@ help_string_telegraph = f'''<br>
 '''
 help = Telegraph(access_token=telegraph_token).create_page(
         title='Mirrorbot Help',
-        author_name='Mirrorbot',
-        author_url='https://github.com/anime-republic/MIRROR-HUNTER',
+        author_name='MalluMovies',
+        author_url='https://t.me/zkp143',
         html_content=help_string_telegraph,
     )["path"]
 
