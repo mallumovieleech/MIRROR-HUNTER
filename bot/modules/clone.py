@@ -102,8 +102,8 @@ def cloneNode(update, context):
                 log_m = f"\n\n<b>Link Uploaded, Click Below Button</b>"
                 sendMarkup(result + cc + fwdpm, context.bot, update, InlineKeyboardMarkup([[InlineKeyboardButton(text="𝐂𝐋𝐈𝐂𝐊 𝐇𝐄𝐑𝐄", url=logmsg.link)]]))
                 sendPrivate(result + cc + msg_g, context.bot, update, button)
-    else:
-        sendMessage('Provide G-Drive Shareable Link to Clone.', context.bot, update)
+        else:
+            sendMessage('Provide G-Drive Shareable Link to Clone.', context.bot, update)
         if is_gdtot:
             gd.deletefile(link)
     else:
