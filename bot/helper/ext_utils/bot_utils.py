@@ -284,6 +284,18 @@ def new_thread(fn):
 
     return wrapper
 
+def get_content_type(link: str) -> str:
+    try:
+        res = rhead(link, allow_redirects=True, timeout=5, headers = {'user-agent': 'Wget/1.12'})
+        content_type = res.headers.get('content-type')
+    except:
+        try:
+            res = urlopen(link, timeout=5)
+            info = res.info()
+            content_type = info.get_content_type()
+        except:
+            content_type = None
+    return content_type
 
 next_handler = CallbackQueryHandler(turn, pattern="nex", run_async=True)
 previous_handler = CallbackQueryHandler(turn, pattern="pre", run_async=True)
