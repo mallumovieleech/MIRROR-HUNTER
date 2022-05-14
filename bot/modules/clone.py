@@ -6,7 +6,7 @@ from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.mirror_utils.status_utils.clone_status import CloneStatus
 from bot import dispatcher, LOGGER, CLONE_LIMIT, STOP_DUPLICATE, download_dict, download_dict_lock, Interval
-from bot.helper.ext_utils.bot_utils import get_readable_file_size, check_limit, is_gdrive_link, is_gdtot_link, new_thread
+from bot.helper.ext_utils.bot_utils import get_readable_file_size, check_limit, is_gdrive_link, is_gdtot_link
 from bot.helper.mirror_utils.download_utils.direct_link_generator import gdtot
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 import random
@@ -104,6 +104,10 @@ def cloneNode(update, context):
                 sendPrivate(result + cc + msg_g, context.bot, update, button)
     else:
         sendMessage('Provide G-Drive Shareable Link to Clone.', context.bot, update)
+        if is_gdtot:
+            gd.deletefile(link)
+    else:
+        sendMessage('Send Gdrive or gdtot link along with command or by replying to the link by command', bot, message)
 
 clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 dispatcher.add_handler(clone_handler)
